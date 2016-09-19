@@ -1,0 +1,25 @@
+**/.idea
+
+# Ignore the build and lib dirs
+**/build
+**/target
+**/lib/*
+
+# Ignore any executables
+**/bin
+
+# Ignore Mac specific files
+.DS_Store
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+#log files
+*.log
