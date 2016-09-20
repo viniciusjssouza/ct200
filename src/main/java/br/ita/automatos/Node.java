@@ -8,6 +8,7 @@ import java.util.*;
 public class Node implements Serializable {
 
     private static int counter = 0;
+    private static Set<String> ids = new HashSet<>();
 
     private String id;
     private Set<Transition> transitions = new HashSet<>();
@@ -17,16 +18,19 @@ public class Node implements Serializable {
     }
 
     private synchronized static String generateIntegerAscendingId() {
-        String id = String.valueOf(counter);
-        counter++;
+    	String id = String.valueOf(counter);
+    	while (ids.contains(id)) {
+    		counter++;
+    		id = String.valueOf(counter);
+    	}
         return id;
     }
 
     public Node(String id) {
         Preconditions.checkNotNull(id, "The node id cannot be null");
         Preconditions.checkArgument(!id.isEmpty(), "The node id cannot be empty");
-
         this.id = id;
+        ids.add(id);
     }
 
     public String getId() {
@@ -37,6 +41,10 @@ public class Node implements Serializable {
         transitions.add(new Transition(this, nextNode, input));
         return this;
     }
+    
+    public void removeTransition(Transition transition) {
+		this.transitions.remove(transition);		
+	}
 
     public Set<Transition> getTransitions() {
         return Collections.unmodifiableSet(transitions);
@@ -64,6 +72,11 @@ public class Node implements Serializable {
         return Objects.hash(id);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+    	ids.remove(this.id);
+    }
+    
     @Override
     public String toString() {
         return "Node " + this.id;

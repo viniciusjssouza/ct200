@@ -2,14 +2,38 @@ package br.ita.automatos;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.*;
+
+import java.io.ByteArrayInputStream;
 
 /**
  * Created by vinicius on 19/09/16.
  */
 public class AutomataTest {
 
+	 @Test
+	 public void createAutomtaFromInputStream() throws Exception {
+		 String input = "0, 1, ab\n"
+				+ "0, 2, a\n"
+				+ "2, 1, b\n"
+				+ "0, 3, &\n"
+		 		+ "3, 1, &";
+		 Automata automata = new Automata(new ByteArrayInputStream(input.getBytes()));
+		 
+		 Node zero = automata.getNodeById("0").get();
+		 Node one = automata.getNodeById("1").get();
+		 Node three = automata.getNodeById("3").get();
+		 
+		 assertThat(automata.getStartNode(), is(zero));
+		 assertThat(automata.getEndNodes(), hasItem(one));
+		 
+		 assertThat(automata.getNodes().size(), is(4));
+		 assertThat(zero.getTransitions().size(), is(3));
+		 assertThat(zero.getTransitions(), hasItem(new Transition(zero, three, "&")));
+		 assertThat(zero.getTransitions(), hasItem(new Transition(zero, one, "ab")));
+	 }
+	
     @Test
     public void testToString() throws Exception {
         Automata a = createSimpleAutomata();

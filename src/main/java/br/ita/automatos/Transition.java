@@ -52,4 +52,8 @@ public class Transition implements Serializable {
     public String toString() {
         return String.format("%s, %s, %s", sourceNode.getId(), nextNode.getId(), input);
     }
+
+	public boolean containsSingleSymbol() {
+		return getInput().length() == 1;
+	}
 }

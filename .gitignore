@@ -1,4 +1,9 @@
+
 **/.idea
+
+*.classpath
+*.project
+**/.settings
 
 # Ignore the build and lib dirs
 **/build
