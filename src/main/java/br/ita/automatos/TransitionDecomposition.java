@@ -28,4 +28,19 @@ public abstract class TransitionDecomposition {
 	
 	protected abstract void decompose(Automata automata, Transition transition);
 	public abstract boolean isApplicable(Transition transition);
+
+	protected int indexOfFirstNonEnclosedChar(String text, char character) {
+		boolean enclosed = false;
+		for (int i = 0; i < text.length(); i++) {
+			char currChar = text.charAt(i);
+			if (currChar == '(') {
+				enclosed = true;
+			} else if (currChar == ')') {
+				enclosed = false;
+			} else if (currChar == character && !enclosed) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

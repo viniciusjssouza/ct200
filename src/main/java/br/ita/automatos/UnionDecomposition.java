@@ -4,12 +4,11 @@ import com.google.common.base.Preconditions;
 
 public class UnionDecomposition extends TransitionDecomposition {
 
-
 	@Override
 	public boolean isApplicable(Transition transition) {
 		Preconditions.checkNotNull(transition, "The transition cannot be null");
-		
-		return transition.getInput().contains(Alphabet.UNION_OPERATOR);
+		int index = indexOfFirstNonEnclosedUnion(transition.getInput());
+		return index > 0;
 	}
 
 	@Override
@@ -19,11 +18,18 @@ public class UnionDecomposition extends TransitionDecomposition {
 		
 		Node from = transition.getSourceNode();
 		Node to = transition.getNextNode();
-		String[] parts = transition.getInput().split(Alphabet.UNION_OPERATOR);
-		
-		from.addTransition(parts[0].trim(), to);
-		from.addTransition(parts[1].trim(), to);
+
+		int index = indexOfFirstNonEnclosedUnion(transition.getInput());
+
+		from.removeTransition(transition);
+
+		from.addTransition(transition.getInput().substring(0, index).trim(), to);
+		from.addTransition(transition.getInput().substring(index+1,  transition.getInput().length()).trim(),
+				to);
 	}
 
+	private int indexOfFirstNonEnclosedUnion(String text) {
+		return this.indexOfFirstNonEnclosedChar(text, Alphabet.UNION_OPERATOR);
+	}
 
 }

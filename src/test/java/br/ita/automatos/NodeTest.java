@@ -21,8 +21,8 @@ public class NodeTest {
 
         node2.addTransition("b", node1);
         node2.addTransition("a", node2);
-        node2.addTransition(Alphabet.EPSILON, node2);
-        node2.addTransition(Alphabet.EPSILON, node2); // try to repeat transition. It must not be counted.
+        node2.addTransition(String.valueOf(Alphabet.EPSILON), node2);
+        node2.addTransition(Alphabet.EPSILON + "", node2); // try to repeat transition. It must not be counted.
 
         assertThat(node1.getTransitions().size(), is(2));
         assertThat(node2.getTransitions().size(), is(3));

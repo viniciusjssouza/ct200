@@ -37,6 +37,11 @@ public class Node implements Serializable {
         return id;
     }
 
+    public static void clearIds() {
+        ids.clear();
+        counter = 0;
+    }
+
     public Node addTransition(String input, Node nextNode) {
         transitions.add(new Transition(this, nextNode, input));
         return this;

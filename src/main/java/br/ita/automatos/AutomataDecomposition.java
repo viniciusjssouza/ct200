@@ -32,7 +32,9 @@ public class AutomataDecomposition {
 
 	private TransitionDecomposition createDecompositions() {
 		return new UnionDecomposition()
-				.decorate(new ConcatDecomposition());
+				.decorate(new ConcatDecomposition())
+				.decorate(new KleeneDecomposition())
+				.decorate(new ParenthesizedDecomposition());
 	}
 
 }

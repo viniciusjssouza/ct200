@@ -2,13 +2,13 @@ package br.ita.automatos;
 
 import com.google.common.base.Preconditions;
 
-public class ConcatDecomposition extends TransitionDecomposition {
+public class ParenthesizedDecomposition extends TransitionDecomposition {
 
 	@Override
 	public boolean isApplicable(Transition transition) {
 		Preconditions.checkNotNull(transition, "The transition cannot be null");
-		
-		return transition.getInput().matches("\\w\\w+");
+		return transition.getInput().startsWith("(") &&
+				transition.getInput().endsWith(")");
 	}
 
 	@Override
@@ -18,11 +18,11 @@ public class ConcatDecomposition extends TransitionDecomposition {
 		
 		Node from = transition.getSourceNode();
 		Node to = transition.getNextNode();
-		Node middleNode = automata.createNode();
-				
+
 		from.removeTransition(transition);
-		from.addTransition(transition.getInput().charAt(0) + "", middleNode);
-		middleNode.addTransition(transition.getInput().substring(1), to);
+
+		from.addTransition(transition.getInput().substring(1, transition.getInput().length()-1),
+				to);
 	}
 
 
