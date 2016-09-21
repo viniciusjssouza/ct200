@@ -23,7 +23,7 @@ public abstract class TransitionDecomposition {
 
 	public TransitionDecomposition decorate(TransitionDecomposition other) {
 		this.next = Optional.ofNullable(other);
-		return other;
+		return this;
 	}
 	
 	protected abstract void decompose(Automata automata, Transition transition);

@@ -32,6 +32,15 @@ public class Transition implements Serializable {
     public String getInput() {
         return input;
     }
+    
+    public boolean containsSingleSymbol() {
+		return getInput().length() == 1;
+	}
+
+	public boolean isEpsilonTransition() {
+		return getInput().equals(Alphabet.EPSILON+"");
+	}
+
 
     @Override
     public boolean equals(Object o) {
@@ -52,8 +61,4 @@ public class Transition implements Serializable {
     public String toString() {
         return String.format("%s, %s, %s", sourceNode.getId(), nextNode.getId(), input);
     }
-
-	public boolean containsSingleSymbol() {
-		return getInput().length() == 1;
-	}
 }

@@ -4,42 +4,21 @@ import com.google.common.base.Preconditions;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Node implements Serializable {
 
-    private static int counter = 0;
-    private static Set<String> ids = new HashSet<>();
-
     private String id;
     private Set<Transition> transitions = new HashSet<>();
-
-    public Node() {
-        this(generateIntegerAscendingId());
-    }
-
-    private synchronized static String generateIntegerAscendingId() {
-    	String id = String.valueOf(counter);
-    	while (ids.contains(id)) {
-    		counter++;
-    		id = String.valueOf(counter);
-    	}
-        return id;
-    }
 
     public Node(String id) {
         Preconditions.checkNotNull(id, "The node id cannot be null");
         Preconditions.checkArgument(!id.isEmpty(), "The node id cannot be empty");
         this.id = id;
-        ids.add(id);
     }
 
     public String getId() {
         return id;
-    }
-
-    public static void clearIds() {
-        ids.clear();
-        counter = 0;
     }
 
     public Node addTransition(String input, Node nextNode) {
@@ -64,6 +43,13 @@ public class Node implements Serializable {
         return sb.toString();
     }
 
+    public Set<Transition> getTransitionsForInput(String input) {
+    	if (input == null) 
+    		return Collections.emptySet();
+    	return transitions.stream().filter(t ->	t.isEpsilonTransition() || t.getInput().equals(input))
+    			.collect(Collectors.toSet());
+    }    
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,11 +61,6 @@ public class Node implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-    	ids.remove(this.id);
     }
     
     @Override

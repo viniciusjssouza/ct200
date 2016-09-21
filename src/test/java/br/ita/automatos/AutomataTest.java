@@ -12,8 +12,50 @@ import java.io.ByteArrayInputStream;
  */
 public class AutomataTest {
 
-	 @Test
-	 public void createAutomtaFromInputStream() throws Exception {
+	@Test
+	public void acceptStringTest1() throws Exception {
+		Automata automata = TestData.automata1();
+		
+		assertThat(automata.accept("ab"), is(false));
+		assertThat(automata.accept("abb"), is(true));
+		assertThat(automata.accept("bba"), is(true));
+		assertThat(automata.accept("abba"), is(true));		
+		
+	}
+	
+	@Test
+	public void acceptStringTest2() throws Exception {
+		Automata automata = TestData.automata2();
+		
+		assertThat(automata.accept("ab"), is(true));
+		assertThat(automata.accept("abb"), is(false));
+		assertThat(automata.accept("bba"), is(false));
+		assertThat(automata.accept("abba"), is(false));		
+		
+	}
+	
+	@Test
+	public void acceptStringTest3() throws Exception {
+		Automata automata = TestData.automata3();
+		
+		assertThat(automata.accept("ab"), is(true));
+		assertThat(automata.accept("abb"), is(false));
+		assertThat(automata.accept("bba"), is(true));
+		assertThat(automata.accept("abba"), is(false));		
+	}
+	
+	@Test
+	public void acceptStringTest4() throws Exception {
+		Automata automata = TestData.automata4();
+		
+		assertThat(automata.accept("ab"), is(true));
+		assertThat(automata.accept("abb"), is(true));
+		assertThat(automata.accept("bba"), is(false));
+		assertThat(automata.accept("abba"), is(false));		
+	}
+	
+	@Test
+	public void createAutomtaFromInputStream() throws Exception {
 		 String input = "0, 1, ab\n"
 				+ "0, 2, a\n"
 				+ "2, 1, b\n"

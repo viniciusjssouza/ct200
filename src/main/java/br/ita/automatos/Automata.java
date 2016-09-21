@@ -3,6 +3,7 @@ package br.ita.automatos;
 import com.google.common.base.Preconditions;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,7 +25,8 @@ public class Automata {
 	private Map<String, Node> nodes = new HashMap<>();
 	private Node startNode;
 	private Set<Node> endNodes = new HashSet<>();
-
+	
+	
 	public Automata(Node start, Node... end) {
 		Preconditions.checkNotNull(start, "The start node cannot be null");
 		Preconditions.checkNotNull(end, "The end nodes cannot be null");
@@ -40,10 +42,26 @@ public class Automata {
 		fromStream(inputStream);
 	}
 
-	public Automata(String regex) {
-		new AutomataDecomposition(this).decompose(regex);
+	public Automata(String automataDescription) {
+		Preconditions.checkNotNull(automataDescription, "the automata description cannot be null");
+		ByteArrayInputStream in = new ByteArrayInputStream(automataDescription.getBytes());
+		try {
+			fromStream(in);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
+	public Automata() {
+		createDefaultNodes();
+	}
+
+	public static Automata fromRegex(String regex) {
+		Automata automata = new Automata();
+		new AutomataDecomposition(automata).decompose(regex);
+		return automata;
+	}
+	
 	public Collection<Node> getNodes() {
 		return this.nodes.values();
 	}
@@ -67,8 +85,13 @@ public class Automata {
 	}
 
 	public boolean accept(String language) {
-		// TODO exercicio 2
-		throw new UnsupportedOperationException("TO BE IMPLEMENTED");
+		if (language == null || language.isEmpty()) return false;
+		
+		StringComputation computation = new StringComputation(this);
+		
+		Set<Node> finalStates = computation.compute(language);
+		
+		return !Collections.disjoint(this.endNodes, finalStates);
 	}
 
 	protected void fromStream(InputStream inputStream) throws IOException {
@@ -109,7 +132,11 @@ public class Automata {
 	}
 
 	public Node createNode() {
-		Node node = new Node();
+		int nodeCount = nodes.size();
+		while (nodes.containsKey(String.valueOf(nodeCount))) {
+			nodeCount++;
+		}
+		Node node = new Node(String.valueOf(nodeCount));
 		this.nodes.put(node.getId(), node);
 		return node;
 	}
@@ -119,13 +146,52 @@ public class Automata {
 		this.nodes.put(id, node);
 		return node;
 	}
+	
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((endNodes == null) ? 0 : endNodes.hashCode());
+		result = prime * result + ((nodes == null) ? 0 : nodes.hashCode());
+		result = prime * result + ((startNode == null) ? 0 : startNode.hashCode());
+		result = prime * result + getTransitions().hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Automata other = (Automata) obj;
+		if (endNodes == null) {
+			if (other.endNodes != null)
+				return false;
+		} else if (!endNodes.equals(other.endNodes))
+			return false;
+		if (nodes == null) {
+			if (other.nodes != null)
+				return false;
+		} else if (!nodes.equals(other.nodes))
+			return false;
+		if (startNode == null) {
+			if (other.startNode != null)
+				return false;
+		} else if (!startNode.equals(other.startNode))
+			return false;
+		return getTransitions().equals(other.getTransitions());
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		for (Node n : this.nodes.values()) {
 			builder.append(n.getTransitionsAsString());
-			builder.append(System.lineSeparator());
 		}
 		return builder.toString();
 	}

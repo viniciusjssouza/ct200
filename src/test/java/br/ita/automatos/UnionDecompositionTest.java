@@ -15,11 +15,11 @@ public class UnionDecompositionTest extends TransitionDecompositionTest {
 
     @Test
     public void testIsApplicable() throws Exception {
-        Transition t1 = new Transition(new Node(), new Node(), "aba");
-        Transition t2 = new Transition(new Node(), new Node(), "ab+(b+c)*");
-        Transition t3 = new Transition(new Node(), new Node(), "(a+b)*bb(b+a)*");
-        Transition t4 = new Transition(new Node(), new Node(), "a*b+b*a");
-        Transition t5 = new Transition(new Node(), new Node(), "a*b*c*");
+        Transition t1 = new Transition(new Node("0"), new Node("1"), "aba");
+        Transition t2 = new Transition(new Node("0"), new Node("1"), "ab+(b+c)*");
+        Transition t3 = new Transition(new Node("0"), new Node("1"), "(a+b)*bb(b+a)*");
+        Transition t4 = new Transition(new Node("0"), new Node("1"), "a*b+b*a");
+        Transition t5 = new Transition(new Node("0"), new Node("1"), "a*b*c*");
 
         assertThat(decomposition.isApplicable(t1), is(false));
         assertThat(decomposition.isApplicable(t2), is(true));

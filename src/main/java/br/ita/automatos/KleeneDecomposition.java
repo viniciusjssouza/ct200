@@ -8,8 +8,7 @@ public class KleeneDecomposition extends TransitionDecomposition {
 	public boolean isApplicable(Transition transition) {
 		Preconditions.checkNotNull(transition, "The transition cannot be null");
 
-		int index = indexOfFirstNonEnclosedChar(transition.getInput(), Alphabet.KLEENE_CLOSURE);
-		return index > 0;
+		return transition.getInput().matches("^(\\(.+\\)|\\w)\\*$");
 	}
 
 	@Override
@@ -20,27 +19,14 @@ public class KleeneDecomposition extends TransitionDecomposition {
 		Node from = transition.getSourceNode();
 		Node to = transition.getNextNode();
 		Node middleNode = automata.createNode();
-
 				
 		from.removeTransition(transition);
 
-		int index = indexOfFirstNonEnclosedChar(transition.getInput(), Alphabet.KLEENE_CLOSURE);
-
+		String in = transition.getInput();
+		
 		from.addTransition(String.valueOf(Alphabet.EPSILON), middleNode);
-		middleNode.addTransition(transition.getInput().substring(0, index),	middleNode);
-
-		if (isKleeneLastChar(transition, index)) {
-			middleNode.addTransition(String.valueOf(Alphabet.EPSILON), to);
-		} else {
-			Node middleNode2 = automata.createNode();
-			middleNode.addTransition(String.valueOf(Alphabet.EPSILON),	middleNode2);
-			middleNode2.addTransition(transition.getInput().substring(index+1, transition.getInput().length()), to);
-		}
+		middleNode.addTransition(in.substring(0, in.length()-1), middleNode);
+		middleNode.addTransition(String.valueOf(Alphabet.EPSILON), to);
 	}
-
-	private boolean isKleeneLastChar(Transition transition, int index) {
-		return index == transition.getInput().length()-1;
-	}
-
 
 }
