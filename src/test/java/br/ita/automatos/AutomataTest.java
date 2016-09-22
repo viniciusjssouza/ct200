@@ -1,12 +1,15 @@
 package br.ita.automatos;
 
-import org.junit.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+
+import org.junit.Test;
 
 /**
  * Created by vinicius on 19/09/16.
@@ -129,6 +132,24 @@ public class AutomataTest {
         assertThat(a.toString(), containsString("q1, q2, b"));
         assertThat(a.toString(), containsString("q1, q1, a"));
     }
+    
+    @Test
+	public void testToGraphViz() throws Exception {
+		Automata a = TestData.automata2();
+		String graphViz = a.toGraphViz();
+		String expected = "digraph g {\n" +
+				"	rankdir=LR;\n" + 
+				"	size=\"8,5\";\n" +
+				"	node [shape = doublecircle]; 1 ;\n" +
+				"	node [shape = circle];\n" + 
+				"	0 -> 2 [ label = \"&\" ];\n" +
+				"	2 -> 3 [ label = \"a\" ];\n" + 
+				"	2 -> 1 [ label = \"&\" ];\n" +
+				"	3 -> 2 [ label = \"c\" ];\n" + 
+				"	3 -> 2 [ label = \"b\" ];\n" +
+				"}";
+		assertEquals(expected, graphViz);
+	}
 
     private Automata createSimpleAutomata() {
         Node node1 = new Node("q1");
