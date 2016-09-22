@@ -1,7 +1,5 @@
 package br.ita.automatos;
 
-import com.google.common.base.Preconditions;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,6 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.google.common.base.Preconditions;
 
 public class Automata {
 
@@ -183,6 +183,34 @@ public class Automata {
     public Node[] nodesAsArray(String... ids) {
         return this.nodes(ids).toArray(new Node[0]);
     }
+    
+    public String toGraphViz() {
+		Node startNode = this.getStartNode();
+		StringBuilder sb = new StringBuilder();
+		if (startNode != null) {
+			sb.append("digraph g {\n");
+			sb.append("\trankdir=LR;\n");
+			sb.append("\tsize=\"8,5\";\n");
+			sb.append("\tnode [shape = doublecircle]; ");
+			for (Node node : this.getEndNodes()) {
+				sb.append(node.getId()).append(" ");
+			}
+			sb.append(";\n");
+			sb.append("\tnode [shape = circle];\n");
+
+			for (Node node : this.nodes()) {
+				for (Transition transition : node.getTransitions()) {
+					sb.append("\t").append(node.getId()).append(" -> ")
+							.append(transition.getNextNode().getId())
+							.append(String.format(" [ label = \"%s\" ];\n",
+									transition.getInput()));
+				}
+			}
+
+			sb.append("}");
+		}
+		return sb.toString();
+	}
 
     @Override
     public int hashCode() {
