@@ -41,6 +41,9 @@ public class Transition implements Serializable {
 		return getInput().equals(Alphabet.EPSILON+"");
 	}
 
+    public boolean isSelfTransition() {
+        return this.sourceNode.equals(nextNode);
+    }
 
     @Override
     public boolean equals(Object o) {

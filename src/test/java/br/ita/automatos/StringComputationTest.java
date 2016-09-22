@@ -44,7 +44,7 @@ public class StringComputationTest  {
 
 	private void assertHasNodes(Automata automata, Set<Node> nodes, String... ids) {
 		assertThat(nodes, containsInAnyOrder(
-			Stream.of(ids).map(id -> automata.getNodeById(id).get())
+			Stream.of(ids).map(id -> automata.node(id).get())
 				.collect(Collectors.toList()).toArray(new Node[0])				
 		));
 	}

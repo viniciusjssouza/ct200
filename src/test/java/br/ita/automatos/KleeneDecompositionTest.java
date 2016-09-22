@@ -35,9 +35,9 @@ public class KleeneDecompositionTest extends TransitionDecompositionTest {
 
         Node node0 = automata.getStartNode();
         Node node1 = automata.getEndNodes().stream().findFirst().get();
-        Node node2 = automata.getNodeById("2").get();
+        Node node2 = automata.node("2").get();
 
-        assertThat(automata.getNodes().size(), is(3));
+        assertThat(automata.nodes().size(), is(3));
         assertThat(automata.getTransitions().size(), is(3));
         assertThat(automata.getTransitions(), hasItem(new Transition(node0, node2, Alphabet.EPSILON + "")));
         assertThat(automata.getTransitions(), hasItem(new Transition(node2, node2, "b")));
@@ -51,9 +51,9 @@ public class KleeneDecompositionTest extends TransitionDecompositionTest {
 
         Node node0 = automata.getStartNode();
         Node node1 = automata.getEndNodes().stream().findFirst().get();
-        Node node2 = automata.getNodeById("2").get();
+        Node node2 = automata.node("2").get();
 
-        assertThat(automata.getNodes().size(), is(3));
+        assertThat(automata.nodes().size(), is(3));
         assertThat(automata.getTransitions().size(), is(3));
         assertThat(automata.getTransitions(), hasItem(new Transition(node0, node2, Alphabet.EPSILON + "")));
         assertThat(automata.getTransitions(), hasItem(new Transition(node2, node2, "(a+b)")));

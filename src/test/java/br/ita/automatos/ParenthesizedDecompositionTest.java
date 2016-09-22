@@ -37,7 +37,7 @@ public class ParenthesizedDecompositionTest extends TransitionDecompositionTest 
         Node node0 = automata.getStartNode();
         Node node1 = automata.getEndNodes().stream().findFirst().get();
 
-        assertThat(automata.getNodes().size(), is(2));
+        assertThat(automata.nodes().size(), is(2));
         assertThat(automata.getTransitions().size(), is(1));
         assertThat(automata.getTransitions(), hasItem(new Transition(node0, node1, "a+b")));
     }
