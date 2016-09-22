@@ -45,6 +45,11 @@ public class Transition implements Serializable {
         return this.sourceNode.equals(nextNode);
     }
 
+    public boolean hasSameDestination(Transition other) {
+        if (other == null) return false;
+        return this.nextNode.equals(other.nextNode);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

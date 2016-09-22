@@ -62,6 +62,10 @@ public class Automata {
         return automata;
     }
 
+    public void toRegex() {
+        new AutomataComposition(this).compose();
+    }
+
     public void makeEndNode(Node node) {
         Preconditions.checkArgument(nodes().contains(node),
                 "The provided node does not exist in this automata");
@@ -88,6 +92,13 @@ public class Automata {
         } else {
             return Optional.empty();
         }
+    }
+
+    public Set<Transition> transition(Node a, Node b) {
+        Preconditions.checkNotNull(a, "the node A cannot be null");
+        Preconditions.checkNotNull(b, "the node B cannot be null");
+        return a.getTransitions().stream().filter(t -> t.getNextNode().equals(b))
+                .collect(Collectors.toSet());
 
     }
 
@@ -155,6 +166,10 @@ public class Automata {
 
     }
 
+    public void removeNode(Node anyNode) {
+        this.nodes.remove(anyNode.getId());
+    }
+
     public Node createNode() {
         int nodeCount = nodes.size();
         while (nodes.containsKey(String.valueOf(nodeCount))) {
@@ -163,6 +178,14 @@ public class Automata {
         Node node = new Node(String.valueOf(nodeCount));
         this.nodes.put(node.getId(), node);
         return node;
+    }
+
+    public boolean isStartNode(Node node) {
+        return this.startNode.equals(node);
+    }
+
+    public boolean isEndNode(Node node) {
+        return this.endNodes.contains(node);
     }
 
     public Node createNode(String id) {

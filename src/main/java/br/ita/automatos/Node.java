@@ -67,4 +67,12 @@ public class Node implements Serializable {
     public String toString() {
         return "Node " + this.id;
     }
+
+    public Set<Node> neighbours() {
+        return this.getTransitions().stream()
+                .map(t-> t.getNextNode())
+                .filter(n -> !n.equals(this))
+                .collect(Collectors.toSet());
+
+    }
 }
