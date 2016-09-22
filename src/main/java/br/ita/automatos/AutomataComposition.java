@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class AutomataComposition {
 
+	private static final String FINAL_STATE = "F";
+	private static final String START_STATE = "S";
 	private Automata automata;
 
 	public AutomataComposition(Automata automata) {
@@ -16,34 +18,59 @@ public class AutomataComposition {
 	}
 
 	public String compose() {
-		automata.removeEpsilonTransitions();
+		automata.newStartState(START_STATE);
+		automata.newFinalState(FINAL_STATE);
+		
 		while (automata.nodes().size() > 2) {
-			System.out.println(automata);
 			joinTransitions();
-			Node toRemove = automata.getStartNode().neighbours()
-					.stream()
-					.filter(n -> !automata.isEndNode(n))
-					.findAny()
-					.get();
-			removeNode(automata.getStartNode(), toRemove);
+			Node toRemove = automata.nodes().stream()
+					.filter(n -> !automata.isStartNode(n) && !automata.isEndNode(n))
+					.findAny().get();
+			removeNode(toRemove);
 		}
-		return "";
+		
+		joinTransitions();
+		return automata.getStartNode().getTransitions().iterator().next().getInput();
+		
 	}
 
-	private void removeNode(Node startNode, Node anyNode) {
-		for (Transition transition : anyNode.getTransitions()) {
-			if (transition.isSelfTransition() || automata.isStartNode(transition.getNextNode())) {
-				String input = transition.containsSingleSymbol() ?
-						transition.getInput() + Alphabet.KLEENE_CLOSURE : String.format("(%s)*", transition.getInput());
-				startNode.addTransition(input, startNode);
-			} else {
-				Transition tA = automata.transition(startNode, anyNode).iterator().next();
-				String input = transition.containsSingleSymbol() || transition.getInput().startsWith("(") ?
-						tA.getInput() + transition.getInput() : String.format("%s(%s)", tA.getInput(), transition.getInput());
-				startNode.addTransition(input, transition.getNextNode());
-			}
-		}
-		automata.removeNode(anyNode);
+	private void removeNode(Node qi) {
+		Set<Transition> toAdd =  new HashSet<Transition>();
+		automata.getTransitions().stream()
+			.filter(t1 -> t1.getNextNode().equals(qi) && !t1.getSourceNode().equals(qi))
+			.forEach(t1 -> {
+				automata.getTransitions().stream()
+					.filter(t2 -> t2.getSourceNode().equals(qi) && !t2.getNextNode().equals(qi))
+					.forEach(t2 -> {
+						Node qj = t1.getSourceNode();
+						Node qk = t2.getNextNode();
+						final StringBuilder input = new StringBuilder();
+						if (qi.hasSelfTransition()) {
+							qi.getTransitions().stream()
+								.filter(ti -> ti.isSelfTransition())
+								.forEach(ti -> {
+									if (ti.containsSingleSymbol())
+										input.append(String.format("%s%s*%s", t1.getInput(), ti.getInput(), t2.getInput()));
+									else 
+										input.append(String.format("%s(%s)*%s", t1.getInput(), ti.getInput(), t2.getInput()));
+								});
+						} else {	
+							if (t1.containsSingleSymbol())
+								input.append(t1.getInput()); 
+							else 
+								input.append(String.format("(%s)", t1.getInput()));
+							
+							if (t2.containsSingleSymbol())
+								input.append(t2.getInput()); 
+							else 
+								input.append(String.format("(%s)", t2.getInput()));
+						}
+						String transitionInput = input.toString().replace(String.valueOf(Alphabet.EPSILON), "");
+						toAdd.add(new Transition(qj, qk, transitionInput.isEmpty() ? String.valueOf(Alphabet.EPSILON) : transitionInput));
+					});
+			});
+		automata.removeNode(qi);
+		toAdd.forEach(t -> t.getSourceNode().addTransition(t.getInput(), t.getNextNode()));
 	}
 
 	private void joinTransitions() {

@@ -42,6 +42,27 @@ public class Node implements Serializable {
         }
         return sb.toString();
     }
+    
+    public Set<Node> neighbours() {
+        return this.getTransitions().stream()
+                .map(t-> t.getNextNode())
+                .filter(n -> !n.equals(this))
+                .collect(Collectors.toSet());
+    }
+
+	public boolean hasEpsilonTransition() {
+		return this.transitions.stream().filter(t->t.isEpsilonTransition())
+				.count() > 0;
+	}
+    
+	public boolean hasSelfTransition() {
+		for (Transition transition : transitions) {
+			if (transition.isSelfTransition()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
     public Set<Transition> getTransitionsForInput(String input) {
     	if (input == null) 
@@ -66,13 +87,5 @@ public class Node implements Serializable {
     @Override
     public String toString() {
         return "Node " + this.id;
-    }
-
-    public Set<Node> neighbours() {
-        return this.getTransitions().stream()
-                .map(t-> t.getNextNode())
-                .filter(n -> !n.equals(this))
-                .collect(Collectors.toSet());
-
     }
 }

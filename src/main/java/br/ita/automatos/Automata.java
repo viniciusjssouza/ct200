@@ -62,8 +62,8 @@ public class Automata {
         return automata;
     }
 
-    public void toRegex() {
-        new AutomataComposition(this).compose();
+    public String toRegex() {
+        return new AutomataComposition(this).compose();
     }
 
     public void makeEndNode(Node node) {
@@ -167,6 +167,10 @@ public class Automata {
     }
 
     public void removeNode(Node anyNode) {
+    	Preconditions.checkNotNull(anyNode, "The node to be removed cannot be null");
+    	
+    	this.getTransitions().stream().filter(t->t.getNextNode().equals(anyNode))
+    		.forEach(t -> t.getSourceNode().removeTransition(t));
         this.nodes.remove(anyNode.getId());
     }
 
@@ -206,6 +210,23 @@ public class Automata {
     public Node[] nodesAsArray(String... ids) {
         return this.nodes(ids).toArray(new Node[0]);
     }
+    
+    public Node newStartState(String startState) {
+		Node node = this.createNode(startState);
+		node.addTransition(Alphabet.EPSILON+"", this.startNode);
+		this.startNode = node;
+		return node;
+	}
+
+	public Node newFinalState(String id) {
+		Node node = this.createNode(id);
+		for (Node finalNode : endNodes) {
+			finalNode.addTransition(Alphabet.EPSILON+"", node);			
+		}
+		this.endNodes.clear();
+		this.endNodes.add(node);
+		return node;		
+	}
     
     public String toGraphViz() {
 		Node startNode = this.getStartNode();
@@ -280,5 +301,5 @@ public class Automata {
             builder.append(n.getTransitionsAsString());
         }
         return builder.toString();
-    }
+    }	
 }
