@@ -1,22 +1,36 @@
 package br.ita.automatos;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class Main {
 
 	static boolean toGraphviz = false;
+	static String inputString;
 	
 	public static void main(String... args) {
 		toGraphviz = Stream.of(args)
 				.filter(arg -> arg.equals("graphviz")).count() > 0;
-		if (args.length >= 1) {
-			for (int i = 0; i < args.length; i++)
-				processRegex(args[i]);
+				
+		int idx = hasRegex(args);
+		if (args.length >= 1 && idx >= 0) {
+			inputString = (args.length > 1 ? args[0] : null);
+			processRegex(args[idx].split("\\=")[1].trim());
 		} else {
+			inputString = (args.length > 0 ? args[0] : null);
 			String input = readInput();
 			processAutomata(input);
 		}
+	}
+	
+	private static int hasRegex(String... args) {
+		for (int i = 0; i < args.length; i++) {
+			if(args[i].matches("regex\\=.+")) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private static void processAutomata(String input) {
@@ -31,6 +45,11 @@ public class Main {
 		
 		System.out.println("To Regex...");
 		System.out.println(new Automata(input).toRegex());
+		
+		if (inputString != null) {
+			System.out.printf("\n\nVerifying input string '%s': ", inputString);
+			System.out.println(new Automata(input).accept(inputString) ? "ACCEPT" : "NOT ACCEPT");
+		}
 	}
 
 	private static void printAutomata(Automata automata) {
