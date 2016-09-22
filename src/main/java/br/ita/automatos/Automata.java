@@ -9,7 +9,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -243,11 +245,20 @@ public class Automata {
 			sb.append("\tnode [shape = circle];\n");
 
 			for (Node node : this.nodes()) {
+				Map<String, StringBuilder> transitions = new LinkedHashMap<>();
 				for (Transition transition : node.getTransitions()) {
+					String nextNodeId = transition.getNextNode().getId();
+					StringBuilder label = transitions.getOrDefault(nextNodeId, new StringBuilder());
+					if (label.length() > 0)
+						label.append(",");
+					label.append(transition.getInput());
+					transitions.put(nextNodeId, label);
+				}
+				for (Entry<String, StringBuilder> entrySet : transitions.entrySet()) {
 					sb.append("\t").append(node.getId()).append(" -> ")
-							.append(transition.getNextNode().getId())
-							.append(String.format(" [ label = \"%s\" ];\n",
-									transition.getInput()));
+					.append(entrySet.getKey())
+					.append(String.format(" [ label = \"%s\" ];\n",
+							entrySet.getValue().toString()));
 				}
 			}
 

@@ -145,8 +145,28 @@ public class AutomataTest {
 				"	0 -> 2 [ label = \"&\" ];\n" +
 				"	2 -> 3 [ label = \"a\" ];\n" + 
 				"	2 -> 1 [ label = \"&\" ];\n" +
-				"	3 -> 2 [ label = \"c\" ];\n" + 
-				"	3 -> 2 [ label = \"b\" ];\n" +
+				"	3 -> 2 [ label = \"c,b\" ];\n" + 
+				"}";
+		assertEquals(expected, graphViz);
+	}
+    
+    @Test
+	public void testToGraphVizWithTwoTransactionsBetweenStates() throws Exception {
+		Automata a = TestData.automata1();
+		String graphViz = a.toGraphViz();
+		String expected = "digraph g {\n" +
+				"	rankdir=LR;\n" + 
+				"	size=\"8,5\";\n" +
+				"	node [shape = doublecircle]; 1 ;\n" +
+				"	node [shape = circle];\n" + 
+				"	0 -> 4 [ label = \"&\" ];\n" +
+				"	2 -> 3 [ label = \"b\" ];\n" +
+				"	3 -> 5 [ label = \"b\" ];\n" +
+				"	4 -> 4 [ label = \"b,a\" ];\n" +
+				"	4 -> 2 [ label = \"&\" ];\n" +
+				"	5 -> 6 [ label = \"&\" ];\n" +
+				"	6 -> 6 [ label = \"b,a\" ];\n" +
+				"	6 -> 1 [ label = \"&\" ];\n" +
 				"}";
 		assertEquals(expected, graphViz);
 	}

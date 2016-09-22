@@ -5,7 +5,9 @@ public class TestData {
 	public static Automata automata1() {
 		return new Automata(
 	        	"0, 4, &\n "
-	        	+ "4, 4, a\n 4, 4, b\n 4, 2, &\n "
+	        	+ "4, 4, a\n "
+	        	+ "4, 4, b\n "
+	        	+ "4, 2, &\n "
 	        	+ "2, 3, b\n"
 	        	+ "3, 5, b\n"
 	        	+ "5, 6, &\n"
@@ -18,7 +20,8 @@ public class TestData {
 	public static Automata automata2() {
 		return new Automata(
 				"0, 2, &\n "
-    	        	+ "2, 1, &\n 2, 3, a\n"
+    	        	+ "2, 1, &\n "
+    	        	+ "2, 3, a\n"
     	        	+ "3, 2, b\n"
     	        	+ "3, 2, c\n"        		
     	     );              
