@@ -15,7 +15,7 @@ public class Main {
 				
 		int idx = hasRegex(args);
 		if (args.length >= 1 && idx >= 0) {
-			inputString = (args.length > 1 ? args[0] : null);
+			inputString = (args.length > 1 && idx != 0 ? args[0] : null);
 			processRegex(args[idx].split("\\=")[1].trim());
 		} else {
 			inputString = (args.length > 0 ? args[0] : null);
