@@ -1,6 +1,5 @@
 package br.ita.automatos;
 
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -47,8 +46,12 @@ public class Main {
 		System.out.println(new Automata(input).toRegex());
 		
 		if (inputString != null) {
-			System.out.printf("\n\nVerifying input string '%s': ", inputString);
-			System.out.println(new Automata(input).accept(inputString) ? "ACCEPT" : "NOT ACCEPT");
+			String[] inputStringArr = inputString.split(",");
+			System.out.print("\n\n");
+			for (String inputStr : inputStringArr) {
+				System.out.printf("Verifying input string '%s': ", inputStr);
+				System.out.println(new Automata(input).accept(inputStr) ? "ACCEPT" : "NOT ACCEPT");
+			}
 		}
 	}
 
