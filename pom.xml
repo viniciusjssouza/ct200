@@ -4,7 +4,7 @@
 	<groupId>br.ita.automatos</groupId>
 	<artifactId>trabalho1</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0.Final</version>
 	<name>trabalho1</name>
 	<url>http://maven.apache.org</url>
 
